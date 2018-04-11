@@ -31,6 +31,7 @@ class BurgerBuilder extends Component {
   }
 
   componentDidMount () {
+    console.log(this.props);
     axios.get('https://react-my-burger-98189.firebaseio.com/ingredients.json')
       .then(response => {
         this.setState({ingredients: response.data});
@@ -92,28 +93,37 @@ class BurgerBuilder extends Component {
 
   purchaseContinueHandler = () => {
     // alert('You continue!');
-    this.setState({loading: true});
-    const order ={
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: 'Boogy Johnson',
-        address: {
-          street: '112 Some Street',
-          zipCode: '443434',
-          country: 'Whakastan'
-        },
-        email: 'boogy@dance.com'
-      },
-      deliveryMethod: 'slowest'
+  //   this.setState({loading: true});
+  //   const order ={
+  //     ingredients: this.state.ingredients,
+  //     price: this.state.totalPrice,
+  //     customer: {
+  //       name: 'Boogy Johnson',
+  //       address: {
+  //         street: '112 Some Street',
+  //         zipCode: '443434',
+  //         country: 'Whakastan'
+  //       },
+  //       email: 'boogy@dance.com'
+  //     },
+  //     deliveryMethod: 'slowest'
+  //   }
+  //   axios.post('/orders.json', order)
+  //     .then(response => {
+  //       this.setState({loading: false, purchasing: false});
+  //     })
+  //     .catch(error => {
+  //       this.setState({loading: false, purchasing: false});
+  //     });
+    const queryParams =[];
+    for(let i in this.state.ingredients) {
+      queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
     }
-    axios.post('/orders.json', order)
-      .then(response => {
-        this.setState({loading: false, purchasing: false});
-      })
-      .catch(error => {
-        this.setState({loading: false, purchasing: false});
-      });
+    const queryString = queryParams.join('&');
+    this.props.history.push({
+      pathname: '/checkout',
+      search: '?' + queryString
+    });
   }
 
   render () {
